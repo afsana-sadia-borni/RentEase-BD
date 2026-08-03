@@ -56,7 +56,7 @@ ROOT_URLCONF = 'rentease_bd.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'home' / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
