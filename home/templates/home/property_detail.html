@@ -1,0 +1,78 @@
+{% extends 'home/base.html' %}
+
+
+{% block title %}
+{{ property.title }} | RentEase BD
+{% endblock %}
+
+
+
+{% block content %}
+
+
+<div class="row mt-4">
+
+
+    <!-- Image -->
+
+    <div class="col-md-6">
+
+
+        {% if property.image %}
+
+        <img src="{{ property.image.url }}"
+             class="img-fluid rounded shadow"
+             style="width:100%; height:400px; object-fit:cover;">
+
+        {% endif %}
+
+
+    </div>
+
+
+
+
+    <!-- Details -->
+
+    <div class="col-md-6">
+
+
+        <h1 class="fw-bold">
+            {{ property.title }}
+        </h1>
+
+
+        <h5 class="text-muted mt-3">
+            📍 {{ property.location }}
+        </h5>
+
+
+        <h3 class="text-primary mt-3">
+            ৳ {{ property.rent }} / month
+        </h3>
+
+
+
+        <hr>
+
+
+
+        <p>
+            {{ property.description }}
+        </p>
+
+
+
+        <button class="btn btn-success btn-lg mt-3">
+            Contact Owner
+        </button>
+
+
+
+    </div>
+
+
+</div>
+
+
+{% endblock %}

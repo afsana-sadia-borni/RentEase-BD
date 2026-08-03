@@ -2,36 +2,180 @@
 
 
 {% block title %}
-Home
+Home | RentEase BD
 {% endblock %}
 
 
 {% block content %}
 
-<h1>Welcome to RentEase BD</h1>
+<!-- Hero Section -->
+<div class="p-5 mb-4 bg-light rounded-3 shadow-sm">
 
-<p>Find your perfect rental place</p>
+    <div class="container-fluid py-4 text-center">
+
+        <h1 class="display-4 fw-bold">
+            Find Your Perfect Home 🏠
+        </h1>
+
+        <p class="fs-5 text-muted">
+            Rent your dream home easily with RentEase BD.
+        </p>
+
+
+        <a href="/properties/" class="btn btn-primary btn-lg mt-3">
+            Explore Properties
+        </a>
+
+        <a href="/add-property/" class="btn btn-outline-primary btn-lg mt-3">
+            Add Property
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- Featured Properties -->
+
+<h2 class="text-center mb-4">
+    Featured Properties
+</h2>
+
+
+<div class="row">
 
 
 {% for property in properties %}
 
-<div class="property-card">
 
-    <img src="{{ property.image.url }}" width="300">
+<div class="col-md-4 mb-4">
 
-    <h2>{{ property.title }}</h2>
+    <div class="card shadow-sm h-100">
 
-    <p><b>Location:</b> {{ property.location }}</p>
 
-    <p><b>Rent:</b> {{ property.rent }} BDT</p>
+        {% if property.image %}
 
-    <p>{{ property.description }}</p>
+        <img src="{{ property.image.url }}"
+             class="card-img-top"
+             style="height:220px; object-fit:cover;">
+
+        {% endif %}
+
+
+
+        <div class="card-body">
+
+            <h5 class="card-title">
+                {{ property.title }}
+            </h5>
+
+
+            <p class="text-muted">
+                📍 {{ property.location }}
+            </p>
+
+
+            <h6>
+                Rent: ৳ {{ property.rent }}
+            </h6>
+
+
+            <a href="/properties/" 
+               class="btn btn-primary btn-sm mt-2">
+                View Details
+            </a>
+
+
+        </div>
+
+
+    </div>
 
 </div>
 
-<hr>
+
+{% empty %}
+
+
+<div class="text-center">
+
+    <p class="text-muted">
+        No properties available yet.
+    </p>
+
+</div>
+
 
 {% endfor %}
+
+
+</div>
+
+
+
+<!-- Why Choose Us -->
+
+<div class="mt-5 p-4 bg-light rounded shadow-sm">
+
+
+<h2 class="text-center mb-4">
+    Why Choose RentEase BD?
+</h2>
+
+
+<div class="row text-center">
+
+
+<div class="col-md-4">
+
+<h4>🏠</h4>
+
+<h5>
+Verified Properties
+</h5>
+
+<p class="text-muted">
+Find trusted rental homes.
+</p>
+
+</div>
+
+
+
+<div class="col-md-4">
+
+<h4>🔍</h4>
+
+<h5>
+Easy Search
+</h5>
+
+<p class="text-muted">
+Search homes quickly.
+</p>
+
+</div>
+
+
+
+<div class="col-md-4">
+
+<h4>🤝</h4>
+
+<h5>
+Trusted Owners
+</h5>
+
+<p class="text-muted">
+Connect with property owners.
+</p>
+
+</div>
+
+
+</div>
+
+</div>
 
 
 {% endblock %}
