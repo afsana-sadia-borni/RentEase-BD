@@ -1,22 +1,15 @@
 {% extends 'home/base.html' %}
 
-
 {% block title %}
 {{ property.title }} | RentEase BD
 {% endblock %}
 
-
-
 {% block content %}
 
-
-<div class="row mt-4">
-
+<div class="row">
 
     <!-- Image -->
-
     <div class="col-md-6">
-
 
         {% if property.image %}
 
@@ -26,53 +19,54 @@
 
         {% endif %}
 
-
     </div>
 
 
-
-
     <!-- Details -->
-
     <div class="col-md-6">
-
 
         <h1 class="fw-bold">
             {{ property.title }}
         </h1>
 
-
         <h5 class="text-muted mt-3">
             📍 {{ property.location }}
         </h5>
-
 
         <h3 class="text-primary mt-3">
             ৳ {{ property.rent }} / month
         </h3>
 
+        <!-- Property Type -->
+        <p class="mt-3">
+            <strong>Property Type:</strong>
+            {{ property.property_type }}
+        </p>
 
+        <!-- Availability -->
+        <p>
+            <strong>Availability:</strong>
+
+            {% if property.is_available %}
+                <span class="badge bg-success">Available</span>
+            {% else %}
+                <span class="badge bg-danger">Not Available</span>
+            {% endif %}
+
+        </p>
 
         <hr>
-
-
 
         <p>
             {{ property.description }}
         </p>
 
-
-
         <button class="btn btn-success btn-lg mt-3">
             Contact Owner
         </button>
 
-
-
     </div>
 
-
 </div>
-
 
 {% endblock %}

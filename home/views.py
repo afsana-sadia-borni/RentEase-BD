@@ -6,7 +6,6 @@ from .models import Property
 from .forms import PropertyForm
 
 
-
 def home(request):
 
     properties = Property.objects.all()
@@ -16,15 +15,26 @@ def home(request):
     })
 
 
-
 def properties(request):
 
     properties = Property.objects.all()
 
+    search = request.GET.get('search')
+    max_rent = request.GET.get('max_rent')
+
+    if search:
+        properties = properties.filter(
+            location__icontains=search
+        )
+
+    if max_rent:
+        properties = properties.filter(
+            rent__lte=max_rent
+        )
+
     return render(request, 'home/properties.html', {
         'properties': properties
     })
-
 
 
 def add_property(request):
@@ -44,17 +54,13 @@ def add_property(request):
 
             return redirect('/')
 
-
     else:
 
         form = PropertyForm()
 
-
     return render(request, 'home/add_property.html', {
         'form': form
     })
-
-
 
 
 def property_detail(request, id):
@@ -66,8 +72,6 @@ def property_detail(request, id):
     })
 
 
-
-
 def register(request):
 
     if request.method == "POST":
@@ -76,13 +80,11 @@ def register(request):
         email = request.POST['email']
         password = request.POST['password']
 
-
         if User.objects.filter(username=username).exists():
 
             return render(request, 'home/register.html', {
                 'error': 'Username already exists!'
             })
-
 
         user = User.objects.create_user(
             username=username,
@@ -94,11 +96,7 @@ def register(request):
 
         return redirect('/login/')
 
-
     return render(request, 'home/register.html')
-
-
-
 
 
 def user_login(request):
@@ -108,13 +106,11 @@ def user_login(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
 
-
         user = authenticate(
             request,
             username=username,
             password=password
         )
-
 
         if user:
 
@@ -122,18 +118,35 @@ def user_login(request):
 
             return redirect('/')
 
-
         else:
 
             return render(request, 'home/login.html', {
                 'error': 'Invalid username or password'
             })
 
-
     return render(request, 'home/login.html')
 
 
+def profile(request):
 
+    if not request.user.is_authenticated:
+        return redirect('/login/')
+
+    return render(request, 'home/profile.html')
+
+
+def my_properties(request):
+
+    if not request.user.is_authenticated:
+        return redirect('/login/')
+
+    properties = Property.objects.filter(
+        owner=request.user
+    )
+
+    return render(request, 'home/my_properties.html', {
+        'properties': properties
+    })
 
 
 def user_logout(request):

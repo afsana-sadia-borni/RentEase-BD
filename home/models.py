@@ -20,6 +20,20 @@ class Property(models.Model):
         decimal_places=2
     )
 
+    property_type = models.CharField(
+        max_length=50,
+        choices=[
+            ('Apartment', 'Apartment'),
+            ('House', 'House'),
+            ('Room', 'Room'),
+            ('Office', 'Office'),
+            ('Shop', 'Shop'),
+        ],
+        default='Apartment'
+    )
+
+    is_available = models.BooleanField(default=True)
+
     description = models.TextField()
 
     image = models.ImageField(
@@ -27,7 +41,6 @@ class Property(models.Model):
         blank=True,
         null=True
     )
-
 
     def __str__(self):
         return self.title
