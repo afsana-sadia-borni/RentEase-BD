@@ -1,0 +1,84 @@
+{% extends 'home/base.html' %}
+
+{% block title %}
+Book Property | RentEase BD
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-7">
+
+            <div class="card shadow-sm">
+
+                <div class="card-body p-4">
+
+                    <h2 class="fw-bold">
+                        Book Property
+                    </h2>
+
+                    <hr>
+
+                    <h4>
+                        {{ property.title }}
+                    </h4>
+
+                    <p class="text-muted">
+                        📍 {{ property.location }}
+                    </p>
+
+                    <p>
+                        <strong>Rent:</strong>
+                        ৳ {{ property.rent }} / month
+                    </p>
+
+                    {% if error %}
+
+                    <div class="alert alert-danger">
+                        {{ error }}
+                    </div>
+
+                    {% endif %}
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Booking Date
+                            </label>
+
+                            {{ form.booking_date }}
+
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="btn btn-success">
+                            Confirm Booking
+                        </button>
+
+                        <a
+                            href="{% url 'property_detail' property.id %}"
+                            class="btn btn-secondary">
+                            Cancel
+                        </a>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 
-from .models import Property
-from .forms import PropertyForm
+from .models import Property, Booking
+from .forms import PropertyForm, BookingForm
 
 
 def home(request):
@@ -148,6 +148,7 @@ def my_properties(request):
         'properties': properties
     })
 
+
 def edit_property(request, id):
 
     property = Property.objects.get(
@@ -164,7 +165,9 @@ def edit_property(request, id):
         )
 
         if form.is_valid():
+
             form.save()
+
             return redirect('/my-properties/')
 
     else:
@@ -176,6 +179,7 @@ def edit_property(request, id):
         'property': property
     })
 
+
 def delete_property(request, id):
 
     property = Property.objects.get(
@@ -184,12 +188,15 @@ def delete_property(request, id):
     )
 
     if request.method == "POST":
+
         property.delete()
+
         return redirect('/my-properties/')
 
     return render(request, 'home/delete_property.html', {
         'property': property
     })
+
 
 def contact_owner(request, id):
 
@@ -200,6 +207,59 @@ def contact_owner(request, id):
 
     return render(request, 'home/contact_owner.html', {
         'property': property
+    })
+
+
+def book_property(request, id):
+
+    property = Property.objects.get(id=id)
+
+    if not request.user.is_authenticated:
+        return redirect('/login/')
+
+    if not property.is_available:
+
+        return render(request, 'home/booking.html', {
+            'property': property,
+            'error': 'This property is not available.'
+        })
+
+    if request.method == "POST":
+
+        form = BookingForm(request.POST)
+
+        if form.is_valid():
+
+            booking = form.save(commit=False)
+
+            booking.property = property
+            booking.user = request.user
+
+            booking.save()
+
+            return redirect('/my-bookings/')
+
+    else:
+
+        form = BookingForm()
+
+    return render(request, 'home/booking.html', {
+        'form': form,
+        'property': property
+    })
+
+
+def my_bookings(request):
+
+    if not request.user.is_authenticated:
+        return redirect('/login/')
+
+    bookings = Booking.objects.filter(
+        user=request.user
+    ).order_by('-created_at')
+
+    return render(request, 'home/my_bookings.html', {
+        'bookings': bookings
     })
 
 

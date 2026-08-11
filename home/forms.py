@@ -1,5 +1,5 @@
 from django import forms
-from .models import Property
+from .models import Property, Booking
 
 
 class PropertyForm(forms.ModelForm):
@@ -14,3 +14,20 @@ class PropertyForm(forms.ModelForm):
             'description',
             'image',
         ]
+
+
+class BookingForm(forms.ModelForm):
+    class Meta:
+        model = Booking
+        fields = [
+            'booking_date',
+        ]
+
+        widgets = {
+            'booking_date': forms.DateInput(
+                attrs={
+                    'type': 'date',
+                    'class': 'form-control'
+                }
+            )
+        }

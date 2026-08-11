@@ -44,3 +44,35 @@ class Property(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Booking(models.Model):
+
+    property = models.ForeignKey(
+        Property,
+        on_delete=models.CASCADE
+    )
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE
+    )
+
+    booking_date = models.DateField()
+
+    status = models.CharField(
+        max_length=20,
+        choices=[
+            ('Pending', 'Pending'),
+            ('Confirmed', 'Confirmed'),
+            ('Cancelled', 'Cancelled'),
+        ],
+        default='Pending'
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    def __str__(self):
+        return f"{self.user.username} - {self.property.title}"

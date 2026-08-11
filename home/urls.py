@@ -29,6 +29,10 @@ urlpatterns = [
 
     path('property/<int:id>/contact/', views.contact_owner, name='contact_owner'),
 
+    path('property/<int:id>/book/', views.book_property, name='book_property'),
+
+    path('my-bookings/', views.my_bookings, name='my_bookings'),
+
     path('logout/', views.user_logout, name='logout'),
 
 ]
