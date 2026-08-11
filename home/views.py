@@ -148,6 +148,60 @@ def my_properties(request):
         'properties': properties
     })
 
+def edit_property(request, id):
+
+    property = Property.objects.get(
+        id=id,
+        owner=request.user
+    )
+
+    if request.method == "POST":
+
+        form = PropertyForm(
+            request.POST,
+            request.FILES,
+            instance=property
+        )
+
+        if form.is_valid():
+            form.save()
+            return redirect('/my-properties/')
+
+    else:
+
+        form = PropertyForm(instance=property)
+
+    return render(request, 'home/edit_property.html', {
+        'form': form,
+        'property': property
+    })
+
+def delete_property(request, id):
+
+    property = Property.objects.get(
+        id=id,
+        owner=request.user
+    )
+
+    if request.method == "POST":
+        property.delete()
+        return redirect('/my-properties/')
+
+    return render(request, 'home/delete_property.html', {
+        'property': property
+    })
+
+def contact_owner(request, id):
+
+    property = Property.objects.get(id=id)
+
+    if not property.owner:
+        return redirect('/property/{}/'.format(id))
+
+    return render(request, 'home/contact_owner.html', {
+        'property': property
+    })
+
 
 def user_logout(request):
 

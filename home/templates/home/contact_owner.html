@@ -1,0 +1,45 @@
+{% extends 'home/base.html' %}
+
+{% block title %}
+Contact Owner | RentEase BD
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h2>Contact Owner</h2>
+
+    <hr>
+
+    <h4>{{ property.title }}</h4>
+
+    <p>📍 {{ property.location }}</p>
+
+    {% if property.owner %}
+        <p>
+            <strong>Owner:</strong>
+            {{ property.owner.username }}
+        </p>
+
+        <p>
+            <strong>Email:</strong>
+            {{ property.owner.email }}
+        </p>
+
+        {% if property.owner.email %}
+            <a href="mailto:{{ property.owner.email }}"
+               class="btn btn-success">
+                Send Email
+            </a>
+        {% else %}
+            <p class="text-danger">
+                Owner email is not available.
+            </p>
+        {% endif %}
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

@@ -23,6 +23,12 @@ urlpatterns = [
 
     path('my-properties/', views.my_properties, name='my_properties'),
 
+    path('property/<int:id>/edit/', views.edit_property, name='edit_property'),
+
+    path('property/<int:id>/delete/', views.delete_property, name='delete_property'),
+
+    path('property/<int:id>/contact/', views.contact_owner, name='contact_owner'),
+
     path('logout/', views.user_logout, name='logout'),
 
 ]
