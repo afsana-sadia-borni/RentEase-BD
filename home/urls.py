@@ -23,15 +23,53 @@ urlpatterns = [
 
     path('my-properties/', views.my_properties, name='my_properties'),
 
-    path('property/<int:id>/edit/', views.edit_property, name='edit_property'),
+    path(
+        'property/<int:id>/edit/',
+        views.edit_property,
+        name='edit_property'
+    ),
 
-    path('property/<int:id>/delete/', views.delete_property, name='delete_property'),
+    path(
+        'property/<int:id>/delete/',
+        views.delete_property,
+        name='delete_property'
+    ),
 
-    path('property/<int:id>/contact/', views.contact_owner, name='contact_owner'),
+    path(
+        'property/<int:id>/contact/',
+        views.contact_owner,
+        name='contact_owner'
+    ),
 
-    path('property/<int:id>/book/', views.book_property, name='book_property'),
+    path(
+        'property/<int:id>/book/',
+        views.book_property,
+        name='book_property'
+    ),
 
-    path('my-bookings/', views.my_bookings, name='my_bookings'),
+    path(
+        'my-bookings/',
+        views.my_bookings,
+        name='my_bookings'
+    ),
+
+    path(
+        'owner-bookings/',
+        views.owner_bookings,
+        name='owner_bookings'
+    ),
+
+    path(
+        'booking/<int:id>/confirm/',
+        views.confirm_booking,
+        name='confirm_booking'
+    ),
+
+    path(
+        'booking/<int:id>/cancel/',
+        views.cancel_booking,
+        name='cancel_booking'
+    ),
 
     path('logout/', views.user_logout, name='logout'),
 

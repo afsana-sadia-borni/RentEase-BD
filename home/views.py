@@ -262,6 +262,48 @@ def my_bookings(request):
         'bookings': bookings
     })
 
+def owner_bookings(request):
+
+    if not request.user.is_authenticated:
+        return redirect('/login/')
+
+    bookings = Booking.objects.filter(
+        property__owner=request.user
+    ).order_by('-created_at')
+
+    return render(request, 'home/owner_bookings.html', {
+        'bookings': bookings
+    })
+
+def confirm_booking(request, id):
+
+    if not request.user.is_authenticated:
+        return redirect('/login/')
+
+    booking = Booking.objects.get(
+        id=id,
+        property__owner=request.user
+    )
+
+    booking.status = 'Confirmed'
+    booking.save()
+
+    return redirect('/owner-bookings/')
+
+def cancel_booking(request, id):
+
+    if not request.user.is_authenticated:
+        return redirect('/login/')
+
+    booking = Booking.objects.get(
+        id=id,
+        property__owner=request.user
+    )
+
+    booking.status = 'Cancelled'
+    booking.save()
+
+    return redirect('/owner-bookings/')
 
 def user_logout(request):
 

@@ -1,0 +1,114 @@
+{% extends 'home/base.html' %}
+
+{% block title %}
+Owner Bookings | RentEase BD
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <h2 class="fw-bold mb-4">
+        Property Bookings 📅
+    </h2>
+
+    <div class="row g-4">
+
+        {% for booking in bookings %}
+
+        <div class="col-md-6 col-lg-4">
+
+            <div class="card shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <h5 class="fw-bold">
+                        {{ booking.property.title }}
+                    </h5>
+
+                    <p class="text-muted">
+                        📍 {{ booking.property.location }}
+                    </p>
+
+                    <hr>
+
+                    <p>
+                        <strong>Booked By:</strong>
+                        {{ booking.user.username }}
+                    </p>
+
+                    <p>
+                        <strong>Booking Date:</strong>
+                        {{ booking.booking_date }}
+                    </p>
+
+                    <p>
+                        <strong>Status:</strong>
+
+                        {% if booking.status == "Confirmed" %}
+
+                            <span class="badge bg-success">
+                                Confirmed
+                            </span>
+
+                        {% elif booking.status == "Cancelled" %}
+
+                            <span class="badge bg-danger">
+                                Cancelled
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge bg-warning text-dark">
+                                Pending
+                            </span>
+
+                        {% endif %}
+
+                    </p>
+
+
+                    {% if booking.status == "Pending" %}
+
+                    <div class="mt-3">
+
+                        <a
+                            href="{% url 'confirm_booking' booking.id %}"
+                            class="btn btn-success btn-sm">
+                            ✓ Confirm
+                        </a>
+
+                        <a
+                            href="{% url 'cancel_booking' booking.id %}"
+                            class="btn btn-danger btn-sm">
+                            ✕ Cancel
+                        </a>
+
+                    </div>
+
+                    {% endif %}
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="col-12 text-center py-5">
+
+            <h5 class="text-muted">
+                No bookings for your properties yet.
+            </h5>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}
