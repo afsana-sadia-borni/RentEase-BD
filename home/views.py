@@ -224,6 +224,19 @@ def book_property(request, id):
             'error': 'This property is not available.'
         })
 
+    existing_booking = Booking.objects.filter(
+        property=property,
+        user=request.user,
+        status__in=['Pending', 'Confirmed']
+    ).exists()
+
+    if existing_booking:
+
+        return render(request, 'home/booking.html', {
+            'property': property,
+            'error': 'You already have an active booking for this property.'
+        })
+
     if request.method == "POST":
 
         form = BookingForm(request.POST)
