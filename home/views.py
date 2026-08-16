@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 
-from .models import Property, Booking
-from .forms import PropertyForm, BookingForm
+from .models import Property, Booking, Payment
+from .forms import PropertyForm, BookingForm, PaymentForm
 
 
 def home(request):
@@ -275,6 +275,57 @@ def my_bookings(request):
         'bookings': bookings
     })
 
+
+def make_payment(request, id):
+
+    if not request.user.is_authenticated:
+        return redirect('/login/')
+
+    booking = Booking.objects.get(
+        id=id,
+        user=request.user
+    )
+
+    if booking.status != 'Confirmed':
+
+        return render(request, 'home/payment.html', {
+            'booking': booking,
+            'error': 'Payment is only available for confirmed bookings.'
+        })
+
+    if Payment.objects.filter(booking=booking).exists():
+
+        return render(request, 'home/payment.html', {
+            'booking': booking,
+            'error': 'Payment has already been made for this booking.'
+        })
+
+    if request.method == "POST":
+
+        form = PaymentForm(request.POST)
+
+        if form.is_valid():
+
+            payment = form.save(commit=False)
+
+            payment.booking = booking
+            payment.amount = booking.property.rent
+            payment.status = 'Paid'
+
+            payment.save()
+
+            return redirect('/my-bookings/')
+
+    else:
+
+        form = PaymentForm()
+
+    return render(request, 'home/payment.html', {
+        'form': form,
+        'booking': booking
+    })
+
+
 def owner_bookings(request):
 
     if not request.user.is_authenticated:
@@ -287,6 +338,7 @@ def owner_bookings(request):
     return render(request, 'home/owner_bookings.html', {
         'bookings': bookings
     })
+
 
 def confirm_booking(request, id):
 
@@ -303,6 +355,7 @@ def confirm_booking(request, id):
 
     return redirect('/owner-bookings/')
 
+
 def cancel_booking(request, id):
 
     if not request.user.is_authenticated:
@@ -317,6 +370,7 @@ def cancel_booking(request, id):
     booking.save()
 
     return redirect('/owner-bookings/')
+
 
 def user_logout(request):
 

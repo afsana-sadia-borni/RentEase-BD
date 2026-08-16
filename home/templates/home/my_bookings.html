@@ -47,6 +47,11 @@ My Bookings | RentEase BD
                     </p>
 
                     <p>
+                        <strong>Rent:</strong>
+                        ৳ {{ booking.property.rent }}
+                    </p>
+
+                    <p>
                         <strong>Status:</strong>
 
                         {% if booking.status == "Confirmed" %}
@@ -71,11 +76,37 @@ My Bookings | RentEase BD
 
                     </p>
 
-                    <a
-                        href="{% url 'property_detail' booking.property.id %}"
-                        class="btn btn-outline-primary btn-sm">
-                        View Property
-                    </a>
+
+                    <div class="d-flex gap-2 flex-wrap">
+
+                        <a
+                            href="{% url 'property_detail' booking.property.id %}"
+                            class="btn btn-outline-primary btn-sm">
+                            View Property
+                        </a>
+
+
+                        {% if booking.status == "Confirmed" %}
+
+                            {% if not booking.payment %}
+
+                                <a
+                                    href="{% url 'make_payment' booking.id %}"
+                                    class="btn btn-success btn-sm">
+                                    Pay Now 💳
+                                </a>
+
+                            {% else %}
+
+                                <span class="badge bg-success align-self-center">
+                                    Payment Completed ✓
+                                </span>
+
+                            {% endif %}
+
+                        {% endif %}
+
+                    </div>
 
                 </div>
 

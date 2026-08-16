@@ -1,8 +1,9 @@
 from django import forms
-from .models import Property, Booking
+from .models import Property, Booking, Payment
 
 
 class PropertyForm(forms.ModelForm):
+
     class Meta:
         model = Property
         fields = [
@@ -17,6 +18,7 @@ class PropertyForm(forms.ModelForm):
 
 
 class BookingForm(forms.ModelForm):
+
     class Meta:
         model = Booking
         fields = [
@@ -30,4 +32,21 @@ class BookingForm(forms.ModelForm):
                     'class': 'form-control'
                 }
             )
+        }
+
+
+class PaymentForm(forms.ModelForm):
+
+    class Meta:
+        model = Payment
+        fields = [
+            'payment_method',
+        ]
+
+        widgets = {
+            'payment_method': forms.Select(
+                attrs={
+                    'class': 'form-control'
+                }
+            ),
         }

@@ -1,0 +1,92 @@
+{% extends 'home/base.html' %}
+
+{% block title %}
+Payment | RentEase BD
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-6">
+
+            <div class="card shadow-sm">
+
+                <div class="card-body p-4">
+
+                    <h3 class="fw-bold mb-4">
+                        Make Payment 💳
+                    </h3>
+
+                    <h5 class="fw-bold">
+                        {{ booking.property.title }}
+                    </h5>
+
+                    <p class="text-muted">
+                        📍 {{ booking.property.location }}
+                    </p>
+
+                    <hr>
+
+                    {% if error %}
+
+                        <div class="alert alert-danger">
+                            {{ error }}
+                        </div>
+
+                    {% else %}
+
+                        <div class="mb-3">
+
+                            <label class="form-label fw-bold">
+                                Amount
+                            </label>
+
+                            <input
+                                type="text"
+                                class="form-control"
+                                value="৳ {{ booking.property.rent }}"
+                                readonly
+                            >
+
+                        </div>
+
+
+                        <form method="POST">
+
+                            {% csrf_token %}
+
+                            <div class="mb-3">
+
+                                {{ form.payment_method.label_tag }}
+
+                                {{ form.payment_method }}
+
+                            </div>
+
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary w-100">
+
+                                Pay Now 💳
+
+                            </button>
+
+                        </form>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

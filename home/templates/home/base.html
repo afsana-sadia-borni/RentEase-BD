@@ -60,25 +60,132 @@
 
             <ul class="navbar-nav me-auto">
 
+                <!-- Home -->
+
                 <li class="nav-item">
-                    <a class="nav-link" href="/">
+
+                    <a
+                        class="nav-link"
+                        href="/">
                         Home
                     </a>
+
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'properties' %}">
+
+                <!-- Properties Dropdown -->
+
+                <li class="nav-item dropdown">
+
+                    <a
+                        class="nav-link dropdown-toggle"
+                        href="#"
+                        role="button"
+                        data-bs-toggle="dropdown">
+
                         Properties
+
                     </a>
+
+                    <ul class="dropdown-menu">
+
+                        <li>
+
+                            <a
+                                class="dropdown-item"
+                                href="{% url 'properties' %}">
+
+                                All Properties
+
+                            </a>
+
+                        </li>
+
+                        {% if user.is_authenticated %}
+
+                        <li>
+
+                            <a
+                                class="dropdown-item"
+                                href="{% url 'add_property' %}">
+
+                                Add Property
+
+                            </a>
+
+                        </li>
+
+                        <li>
+
+                            <a
+                                class="dropdown-item"
+                                href="{% url 'my_properties' %}">
+
+                                My Properties
+
+                            </a>
+
+                        </li>
+
+                        {% endif %}
+
+                    </ul>
+
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'add_property' %}">
-                        Add Property
+
+                <!-- Bookings Dropdown -->
+
+                {% if user.is_authenticated %}
+
+                <li class="nav-item dropdown">
+
+                    <a
+                        class="nav-link dropdown-toggle"
+                        href="#"
+                        role="button"
+                        data-bs-toggle="dropdown">
+
+                        Bookings
+
                     </a>
+
+                    <ul class="dropdown-menu">
+
+                        <li>
+
+                            <a
+                                class="dropdown-item"
+                                href="{% url 'my_bookings' %}">
+
+                                My Bookings
+
+                            </a>
+
+                        </li>
+
+                        <li>
+
+                            <a
+                                class="dropdown-item"
+                                href="{% url 'owner_bookings' %}">
+
+                                Owner Bookings
+
+                            </a>
+
+                        </li>
+
+                    </ul>
+
                 </li>
+
+                {% endif %}
 
             </ul>
+
+
+            <!-- Right Side -->
 
             <ul class="navbar-nav align-items-center">
 
@@ -87,27 +194,35 @@
                     <li class="nav-item me-2">
 
                         <span class="navbar-text text-white">
+
                             👋 Hi, {{ user.username }}
+
                         </span>
 
                     </li>
+
 
                     <li class="nav-item me-2">
 
                         <a
                             class="btn btn-light btn-sm"
                             href="{% url 'profile' %}">
+
                             My Profile
+
                         </a>
 
                     </li>
+
 
                     <li class="nav-item">
 
                         <a
                             class="btn btn-outline-light btn-sm"
                             href="{% url 'logout' %}">
+
                             Logout
+
                         </a>
 
                     </li>
@@ -119,17 +234,22 @@
                         <a
                             class="btn btn-light btn-sm me-2"
                             href="{% url 'login' %}">
+
                             Login
+
                         </a>
 
                     </li>
+
 
                     <li class="nav-item">
 
                         <a
                             class="btn btn-outline-light btn-sm"
                             href="{% url 'register' %}">
+
                             Register
+
                         </a>
 
                     </li>
@@ -149,6 +269,8 @@
 
 {% endblock %}
 
+
+<!-- Footer -->
 
 <footer class="bg-light py-4">
 
