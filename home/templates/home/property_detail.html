@@ -1,0 +1,225 @@
+{% extends 'home/base.html' %}
+
+{% block title %}
+{{ property.title }} | RentEase BD
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row">
+
+        <!-- Image -->
+        <div class="col-md-6">
+            {% if property.image %}
+            <img
+                src="{{ property.image.url }}"
+                class="img-fluid rounded shadow"
+                style="width:100%; height:400px; object-fit:cover;"
+                alt="{{ property.title }}"
+            >
+            {% else %}
+            <div class="bg-light rounded d-flex align-items-center justify-content-center shadow" style="width:100%; height:400px;">
+                <span class="text-muted">No Image Available</span>
+            </div>
+            {% endif %}
+        </div>
+
+
+        <!-- Details -->
+        <div class="col-md-6">
+
+            <h1 class="fw-bold">
+                {{ property.title }}
+            </h1>
+
+            <h5 class="text-muted mt-3">
+                📍 {{ property.location }}
+            </h5>
+
+            <h3 class="text-primary mt-3">
+                ৳ {{ property.rent }} / month
+            </h3>
+
+            <p class="mt-3">
+                <strong>Property Type:</strong>
+                {{ property.property_type }}
+            </p>
+
+            <p>
+                <strong>Availability:</strong>
+                {% if property.is_available %}
+                    <span class="text-success fw-bold">
+                        Available
+                    </span>
+                {% else %}
+                    <span class="text-danger fw-bold">
+                        Not Available
+                    </span>
+                {% endif %}
+            </p>
+
+            <hr>
+
+            <p>
+                {{ property.description }}
+            </p>
+
+            <!-- Property Location Map (Leaflet OpenStreetMap) -->
+            {% if property.latitude and property.longitude %}
+            <!-- Leaflet CSS & JS -->
+            <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+            <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+            <div class="mt-4">
+                <h5 class="fw-bold">Property Location 🗺️</h5>
+                <div id="property-map" style="height: 300px; width: 100%;" class="rounded border shadow-sm mt-2"></div>
+            </div>
+
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    var lat = {{ property.latitude }};
+                    var lng = {{ property.longitude }};
+
+                    var propertyMap = L.map('property-map').setView([lat, lng], 15);
+
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '© OpenStreetMap contributors'
+                    }).addTo(propertyMap);
+
+                    L.marker([lat, lng]).addTo(propertyMap)
+                        .bindPopup("<b>{{ property.title|escapejs }}</b><br>📍 {{ property.location|escapejs }}")
+                        .openPopup();
+                });
+            </script>
+            {% endif %}
+
+            <!-- Availability and Action Buttons -->
+            <div class="mt-4">
+                {% if is_owner %}
+                    <!-- ল্যান্ডলর্ড নিজে নিজের প্রপার্টি দেখলে -->
+                    <div class="alert alert-info fw-bold mb-3">
+                        🏡 You are the owner of this property.
+                    </div>
+                    <div>
+                        <a href="{% url 'edit_property' property.id %}" class="btn btn-warning btn-lg me-2">
+                            Edit Property
+                        </a>
+                        <a href="{% url 'owner_bookings' %}" class="btn btn-outline-primary btn-lg">
+                            View Bookings
+                        </a>
+                    </div>
+
+                {% elif user_booking %}
+                    <!-- যদি এই ইউজার নিজেই বুক করে থাকে -->
+                    <div class="alert alert-success d-inline-block px-3 py-2 fw-bold mb-2">
+                        ✅ You have booked this property (Status: {{ user_booking.status }})
+                    </div>
+                    <div>
+                        <a href="{% url 'my_bookings' %}" class="btn btn-outline-primary btn-lg mt-2 me-2">
+                            Go to My Bookings
+                        </a>
+                        <a href="{% url 'contact_owner' property.id %}" class="btn btn-outline-secondary btn-lg mt-2">
+                            Contact Owner
+                        </a>
+                    </div>
+
+                {% elif not property.is_available %}
+                    <!-- যদি অন্য কেউ বুক করে ফেলে -->
+                    <button class="btn btn-secondary btn-lg mt-2 me-2" disabled>
+                        Already Booked
+                    </button>
+                    <a href="{% url 'contact_owner' property.id %}" class="btn btn-outline-primary btn-lg mt-2">
+                        Contact Owner
+                    </a>
+
+                {% else %}
+                    <!-- যদি প্রপার্টি খালি থাকে -->
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'book_property' property.id %}" class="btn btn-success btn-lg mt-2 me-2">
+                            Book Now
+                        </a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-success btn-lg mt-2 me-2">
+                            Login to Book
+                        </a>
+                    {% endif %}
+
+                    <a href="{% url 'contact_owner' property.id %}" class="btn btn-outline-primary btn-lg mt-2">
+                        Contact Owner
+                    </a>
+                {% endif %}
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Review Section -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <hr class="my-5">
+        </div>
+
+        <!-- Add Review Form -->
+        <div class="col-md-5 mb-4">
+            <div class="card p-4 shadow-sm border-0">
+                <h4 class="fw-bold mb-3">✍️ Leave a Review</h4>
+                {% if user.is_authenticated %}
+                    <form action="{% url 'add_review' property.id %}" method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label fw-medium">Rating (1 to 5 Stars):</label>
+                            <select name="rating" class="form-select" required>
+                                <option value="5">⭐⭐⭐⭐⭐ (5 - Excellent)</option>
+                                <option value="4">⭐⭐⭐⭐ (4 - Very Good)</option>
+                                <option value="3">⭐⭐⭐ (3 - Average)</option>
+                                <option value="2">⭐⭐ (2 - Poor)</option>
+                                <option value="1">⭐ (1 - Terrible)</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-medium">Your Feedback:</label>
+                            <textarea name="comment" class="form-control" rows="3" placeholder="Write your experience about this property..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Submit Review</button>
+                    </form>
+                {% else %}
+                    <p class="text-muted mb-0">Please <a href="{% url 'login' %}" class="fw-bold">login</a> to leave a review.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Display Reviews -->
+        <div class="col-md-7">
+            <div class="card p-4 shadow-sm border-0">
+                <h4 class="fw-bold mb-3">💬 Reviews ({{ property.reviews.count }})</h4>
+                {% for review in property.reviews.all %}
+                    <div class="border-bottom pb-3 mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h6 class="fw-bold mb-0">👤 {{ review.user.username }}</h6>
+                            <small class="text-muted">{{ review.created_at|date:"d M, Y" }}</small>
+                        </div>
+                        <div class="text-warning my-1">
+                            {% if review.rating == 5 %} ⭐⭐⭐⭐⭐
+                            {% elif review.rating == 4 %} ⭐⭐⭐⭐
+                            {% elif review.rating == 3 %} ⭐⭐⭐
+                            {% elif review.rating == 2 %} ⭐⭐
+                            {% else %} ⭐
+                            {% endif %}
+                            <span class="text-dark fw-bold">({{ review.rating }}/5)</span>
+                        </div>
+                        <p class="mb-0 text-secondary">{{ review.comment }}</p>
+                    </div>
+                {% empty %}
+                    <p class="text-muted mb-0">No reviews yet. Be the first one to leave a review!</p>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

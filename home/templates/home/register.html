@@ -1,0 +1,106 @@
+{% extends 'home/base.html' %}
+
+{% block title %}
+Register | RentEase BD
+{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div class="card shadow p-4">
+
+            <h2 class="text-center mb-4">
+                Create Account 🏠
+            </h2>
+
+            <!-- Error Message -->
+            {% if error %}
+            <div class="alert alert-danger">
+                {{ error }}
+            </div>
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label class="form-label">
+                        Username
+                    </label>
+                    <input type="text"
+                           name="username"
+                           class="form-control"
+                           placeholder="Enter username"
+                           required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">
+                        Email
+                    </label>
+                    <input type="email"
+                           name="email"
+                           class="form-control"
+                           placeholder="Enter email"
+                           required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">
+                        Password
+                    </label>
+                    <input type="password"
+                           name="password"
+                           class="form-control"
+                           placeholder="Enter password"
+                           required>
+                </div>
+
+                <!-- Role Selection Options -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold d-block">
+                        I am registering as:
+                    </label>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input"
+                               type="radio"
+                               name="role"
+                               id="tenant"
+                               value="tenant"
+                               checked>
+                        <label class="form-check-label" for="tenant">
+                            Tenant (ভাড়াটিয়া)
+                        </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input"
+                               type="radio"
+                               name="role"
+                               id="landlord"
+                               value="landlord">
+                        <label class="form-check-label" for="landlord">
+                            Landlord (বাড়িওয়ালা)
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit"
+                        class="btn btn-primary w-100">
+                    Register
+                </button>
+
+            </form>
+
+            <p class="text-center mt-3">
+                Already have an account?
+                <a href="/login/">
+                    Login
+                </a>
+            </p>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

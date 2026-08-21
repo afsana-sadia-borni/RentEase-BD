@@ -1,0 +1,123 @@
+{% extends 'home/base.html' %}
+
+{% block title %}
+Add Property | RentEase BD
+{% endblock %}
+
+{% block content %}
+
+<!-- Leaflet Map CSS & JS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-7">
+            <div class="card shadow border-0 rounded-4 p-4 p-md-5 bg-white">
+                
+                <h2 class="text-center fw-bold text-success mb-4">Add Your Property</h2>
+
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    {% for field in form %}
+                        {% if field.name != 'latitude' and field.name != 'longitude' %}
+                            <div class="mb-3">
+                                <label for="{{ field.id_for_label }}" class="form-label fw-semibold text-dark">
+                                    {{ field.label }}
+                                </label>
+                                
+                                {% if field.field.widget.input_type == 'checkbox' %}
+                                    <div class="form-check form-switch">
+                                        <input type="checkbox" name="{{ field.name }}" class="form-check-input" id="{{ field.id_for_label }}" {% if field.value %}checked{% endif %}>
+                                    </div>
+                                {% else %}
+                                    <div>
+                                        {{ field }}
+                                    </div>
+                                {% endif %}
+
+                                {% if field.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ field.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+
+                    <!-- Hidden Map Latitude & Longitude Inputs -->
+                    <input type="hidden" name="latitude" id="id_latitude" value="{{ form.latitude.value|default:'' }}">
+                    <input type="hidden" name="longitude" id="id_longitude" value="{{ form.longitude.value|default:'' }}">
+
+                    <!-- Map Selection Area -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold text-dark">Pick Location on Map 📍</label>
+                        <p class="text-muted small mb-2">Click on the map to mark the property position.</p>
+                        <div id="map" style="height: 280px;" class="rounded border shadow-sm"></div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-success btn-lg fw-bold rounded-3">
+                            Submit Property
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JS Script for Full Width Forms & Interactive Map -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Force Bootstrap styling on Django Form Elements
+        const inputs = document.querySelectorAll('input:not([type="checkbox"]):not([type="hidden"]), select, textarea');
+        inputs.forEach(input => {
+            input.classList.add('form-control', 'w-100');
+        });
+
+        // Default Location: Dhaka Coordinates
+        var defaultLat = 23.8103;
+        var defaultLng = 90.4125;
+
+        var latInput = document.getElementById('id_latitude');
+        var lngInput = document.getElementById('id_longitude');
+
+        if (latInput.value && lngInput.value) {
+            defaultLat = parseFloat(latInput.value);
+            defaultLng = parseFloat(lngInput.value);
+        }
+
+        var map = L.map('map').setView([defaultLat, defaultLng], 12);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        var marker;
+
+        if (latInput.value && lngInput.value) {
+            marker = L.marker([defaultLat, defaultLng]).addTo(map);
+        }
+
+        map.on('click', function (e) {
+            var lat = e.latlng.lat;
+            var lng = e.latlng.lng;
+
+            if (marker) {
+                marker.setLatLng(e.latlng);
+            } else {
+                marker = L.marker(e.latlng).addTo(map);
+            }
+
+            latInput.value = lat;
+            lngInput.value = lng;
+        });
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,105 @@
+{% extends 'home/base.html' %} 
+
+{% block title %} My Bookings | RentEase BD {% endblock %} 
+
+{% block content %}
+<div class="container py-5">
+  <h2 class="fw-bold mb-4">My Bookings 📅</h2>
+
+  <div class="row g-4">
+    {% for booking in bookings %}
+    <div class="col-md-6 col-lg-4">
+      <div class="card shadow-sm h-100 border-0">
+        {% if booking.property.image %}
+        <img
+          src="{{ booking.property.image.url }}"
+          class="card-img-top"
+          style="height: 220px; object-fit: cover"
+          alt="{{ booking.property.title }}"
+        />
+        {% endif %}
+
+        <div class="card-body d-flex flex-column">
+          <h5 class="fw-bold">{{ booking.property.title }}</h5>
+
+          <p class="text-muted mb-1">📍 {{ booking.property.location }}</p>
+
+          <p class="mb-1">
+            <strong>Booking Date:</strong>
+            {{ booking.booking_date|default:booking.created_at|date:"M d, Y" }}
+          </p>
+
+          <p class="mb-2">
+            <strong>Rent:</strong>
+            ৳ {{ booking.property.rent }}
+          </p>
+
+          <p class="mb-3">
+            <strong>Status:</strong>
+            {% if booking.status == "Confirmed" %}
+              <span class="badge bg-success">Confirmed</span>
+            {% elif booking.status == "Cancelled" %}
+              <span class="badge bg-danger">Cancelled</span>
+            {% else %}
+              <span class="badge bg-warning text-dark">Pending</span>
+            {% endif %}
+          </p>
+
+          <div class="mt-auto">
+            <!-- View Property Button -->
+            <a
+              href="{% url 'property_detail' booking.property.id %}"
+              class="btn btn-outline-primary btn-sm w-100 mb-2"
+            >
+              View Property Details
+            </a>
+
+            <!-- Payment Logic -->
+            {% if booking.status == "Confirmed" %} 
+              {% if booking.payment %}
+                <div class="alert alert-success py-2 text-center mb-2 fw-bold small">
+                  ✅ Paid {% if booking.payment.payment_method %}({{ booking.payment.payment_method }}){% endif %}
+                </div>
+              {% else %}
+                <a
+                  href="{% url 'make_payment' booking.id %}"
+                  class="btn btn-success btn-sm w-100 fw-bold mb-2"
+                >
+                  Pay Now 💳
+                </a>
+              {% endif %} 
+            {% elif booking.status == "Pending" %}
+              <p class="small text-muted mb-2 text-center">Awaiting owner confirmation to pay.</p>
+            {% endif %}
+
+            <!-- Contact Owner Button -->
+            <div class="mt-2">
+              {% if booking.property.owner.profile.phone_number %}
+                <a href="tel:{{ booking.property.owner.profile.phone_number }}" class="btn btn-outline-secondary btn-sm w-100">
+                  📞 Contact Owner: {{ booking.property.owner.profile.phone_number }}
+                </a>
+              {% else %}
+                <a href="mailto:{{ booking.property.owner.email }}" class="btn btn-outline-secondary btn-sm w-100">
+                  ✉️ Email Owner: {{ booking.property.owner.email }}
+                </a>
+              {% endif %}
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    {% empty %}
+    <div class="col-12 text-center py-5">
+      <div class="alert alert-info p-4">
+        <h5 class="text-muted mb-3">You haven't booked any property yet.</h5>
+        <a href="{% url 'properties' %}" class="btn btn-primary">
+          Browse Properties
+        </a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

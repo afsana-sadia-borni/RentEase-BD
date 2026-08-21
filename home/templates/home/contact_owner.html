@@ -1,0 +1,67 @@
+{% extends 'home/base.html' %}
+
+{% block title %}
+Contact Owner | RentEase BD
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h2 class="mb-4">Contact Owner</h2>
+
+    {% if property.owner %}
+        <!-- Property Details Section -->
+        <div class="card p-4 shadow-sm border-0" style="max-width: 600px; background-color: #ffffff;">
+            
+            <h3 class="fw-bold">{{ property.title }}</h3>
+            <p class="text-muted">📍 {{ property.location }}</p>
+            
+            <hr>
+            
+            <p class="mb-2">
+                <strong>Owner:</strong> {{ property.owner.username }}
+            </p>
+            
+            <!-- Email display -->
+            <p class="mb-2">
+                <strong>Email:</strong> 
+                {% if property.owner.email %}
+                    <a href="mailto:{{ property.owner.email }}" class="text-decoration-none">
+                        {{ property.owner.email }}
+                    </a>
+                {% else %}
+                    <span class="text-danger">Not provided</span>
+                {% endif %}
+            </p>
+            
+            <!-- Phone display -->
+            <p class="mb-4">
+                <strong>Phone:</strong> 
+                {% if property.owner.profile.phone_number %}
+                    <a href="tel:{{ property.owner.profile.phone_number }}" class="text-decoration-none fw-bold text-primary">
+                        📞 {{ property.owner.profile.phone_number }}
+                    </a>
+                {% else %}
+                    <span class="text-muted">Not provided</span>
+                {% endif %}
+            </p>
+
+            {% if property.owner.email %}
+                <div>
+                    <a href="mailto:{{ property.owner.email }}" class="btn btn-success px-4">
+                        Send Email
+                    </a>
+                </div>
+            {% endif %}
+
+        </div>
+    {% else %}
+        <div class="alert alert-warning">
+            Owner details not available for this property.
+        </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}
