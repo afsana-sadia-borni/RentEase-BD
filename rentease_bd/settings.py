@@ -24,8 +24,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'cloudinary_storage',  # staticfiles এর ঠিক উপরে
     'django.contrib.staticfiles',
-
+    'cloudinary',          # Cloudinary app
     'home',
 ]
 
@@ -121,7 +122,15 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
-# Media files (image upload)
+# Media files (image upload using Cloudinary)
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'gqu9rjo1',
+    'API_KEY': '668821744858771',
+    'API_SECRET': 'x5UCN5V0hWT8uCfY4cAQl9C-Dug'
+}
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
