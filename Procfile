@@ -1,0 +1,1 @@
+web: gunicorn rentease_bd.wsgi
