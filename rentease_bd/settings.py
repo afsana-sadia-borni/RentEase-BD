@@ -11,7 +11,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Security
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-wiflf_iqy)lwtu)ou!svx^t8ee253fy(-!m%!10n)8z%!ebstx')
 
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+# Render-এ থাকলে DEBUG অটোমেটিক False হবে, লোকাল পিসিতে True থাকবে
+DEBUG = os.environ.get('RENDER') is None
 
 ALLOWED_HOSTS = ['*']
 
@@ -134,3 +135,13 @@ CLOUDINARY_STORAGE = {
 }
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+# গ্লোবাল Cloudinary Configuration (ValueError সমাধান করার জন্য)
+import cloudinary
+
+cloudinary.config(
+    cloud_name='gqu9rjo1',
+    api_key='668821744858771',
+    api_secret='x5UCN5V0hWT8uCfY4cAQl9C-Dug',
+    secure=True
+)

@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
+from cloudinary.models import CloudinaryField  # Cloudinary Import করা হলো
 
 
 class Property(models.Model):
@@ -41,8 +42,9 @@ class Property(models.Model):
 
     description = models.TextField()
 
-    image = models.ImageField(
-        upload_to='properties/',
+    # ImageField এর জায়গায় CloudinaryField ব্যবহার করা হলো
+    image = CloudinaryField(
+        'image',
         blank=True,
         null=True
     )
@@ -81,7 +83,6 @@ class Booking(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.property.title}"
-
 
 
 class Payment(models.Model):
@@ -132,6 +133,8 @@ class Profile(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.role}"
+
+
 class Review(models.Model):
     property = models.ForeignKey('Property', on_delete=models.CASCADE, related_name='reviews')
     user = models.ForeignKey(User, on_delete=models.CASCADE)

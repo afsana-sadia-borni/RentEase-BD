@@ -71,13 +71,18 @@ Add Property | RentEase BD
     </div>
 </div>
 
-<!-- JS Script for Full Width Forms & Interactive Map -->
+<!-- JS Script for Form Inputs & Interactive Map -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Force Bootstrap styling on Django Form Elements
-        const inputs = document.querySelectorAll('input:not([type="checkbox"]):not([type="hidden"]), select, textarea');
+        // Bootstrap Class support without affecting file input types
+        const inputs = document.querySelectorAll('input:not([type="checkbox"]):not([type="hidden"]):not([type="file"]), select, textarea');
         inputs.forEach(input => {
             input.classList.add('form-control', 'w-100');
+        });
+
+        const fileInputs = document.querySelectorAll('input[type="file"]');
+        fileInputs.forEach(input => {
+            input.classList.add('form-control');
         });
 
         // Default Location: Dhaka Coordinates
@@ -87,7 +92,7 @@ Add Property | RentEase BD
         var latInput = document.getElementById('id_latitude');
         var lngInput = document.getElementById('id_longitude');
 
-        if (latInput.value && lngInput.value) {
+        if (latInput && latInput.value && lngInput && lngInput.value) {
             defaultLat = parseFloat(latInput.value);
             defaultLng = parseFloat(lngInput.value);
         }
@@ -100,7 +105,7 @@ Add Property | RentEase BD
 
         var marker;
 
-        if (latInput.value && lngInput.value) {
+        if (latInput && latInput.value && lngInput && lngInput.value) {
             marker = L.marker([defaultLat, defaultLng]).addTo(map);
         }
 
@@ -114,8 +119,10 @@ Add Property | RentEase BD
                 marker = L.marker(e.latlng).addTo(map);
             }
 
-            latInput.value = lat;
-            lngInput.value = lng;
+            if (latInput && lngInput) {
+                latInput.value = lat;
+                lngInput.value = lng;
+            }
         });
     });
 </script>
