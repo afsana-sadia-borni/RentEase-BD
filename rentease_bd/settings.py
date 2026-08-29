@@ -4,15 +4,20 @@ Django settings for rentease_bd project.
 
 import os
 from pathlib import Path
+import cloudinary
+from dotenv import load_dotenv
+
+# .env ফাইল থেকে Variable লোড করা
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Security
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-wiflf_iqy)lwtu)ou!svx^t8ee253fy(-!m%!10n)8z%!ebstx')
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-wiflf_iqy)lwtu)ou!svx^t8ee253fy(-!m%!10n)8z%!ebstx')
 
 # Render-এ থাকলে DEBUG অটোমেটিক False হবে, লোকাল পিসিতে True থাকবে
-DEBUG = os.environ.get('RENDER') is None
+DEBUG = os.getenv('RENDER') is None
 
 ALLOWED_HOSTS = ['*']
 
@@ -66,16 +71,16 @@ TEMPLATES = [
 WSGI_APPLICATION = 'rentease_bd.wsgi.application'
 
 
-# Database (PostgreSQL)
+# Database (PostgreSQL - Credentials from Environment)
 
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "neondb",
-        "USER": "neondb_owner",
-        "PASSWORD": "npg_ioDaIH87lTpF",
-        "HOST": "ep-still-mode-axm4pomw.c-4.us-east-2.aws.neon.tech",
-        "PORT": "5432",
+        "NAME": os.getenv("DB_NAME", "neondb"),
+        "USER": os.getenv("DB_USER", "neondb_owner"),
+        "PASSWORD": os.getenv("DB_PASSWORD", "npg_ioDaIH87lTpF"),
+        "HOST": os.getenv("DB_HOST", "ep-still-mode-axm4pomw.c-4.us-east-2.aws.neon.tech"),
+        "PORT": os.getenv("DB_PORT", "5432"),
         'OPTIONS': {
             'sslmode': 'require',
         },
@@ -129,19 +134,17 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'gqu9rjo1',
-    'API_KEY': '668821744858771',
-    'API_SECRET': 'x5UCN5V0hWT8uCfY4cAQl9C-Dug'
+    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
 }
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
-# গ্লোবাল Cloudinary Configuration (ValueError সমাধান করার জন্য)
-import cloudinary
-
+# গ্লোবাল Cloudinary Configuration
 cloudinary.config(
-    cloud_name='gqu9rjo1',
-    api_key='668821744858771',
-    api_secret='x5UCN5V0hWT8uCfY4cAQl9C-Dug',
+    cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
+    api_key=os.getenv('CLOUDINARY_API_KEY'),
+    api_secret=os.getenv('CLOUDINARY_API_SECRET'),
     secure=True
 )
